@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import com.andwho.myplan.R;
 import com.andwho.myplan.fragment.MineFrag;
 import com.andwho.myplan.fragment.PlanFrag;
+import com.andwho.myplan.utils.Log;
 
 /**
  * 欢迎页 ouyyx
@@ -46,6 +47,7 @@ public class IndexAct extends BaseAct implements OnClickListener {
 	}
 
 	private void init() {
+		Log.e(TAG, "@@...测试提交到github");
 		switchItemSelected(0);
 	}
 
