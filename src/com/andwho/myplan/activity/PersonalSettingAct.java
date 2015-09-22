@@ -1,30 +1,34 @@
 package com.andwho.myplan.activity;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 
 import android.app.Activity;
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.andwho.myplan.R;
-import com.andwho.myplan.contentprovider.DbManger;
-import com.andwho.myplan.model.Plan;
 import com.andwho.myplan.preference.MyPlanPreference;
 import com.andwho.myplan.utils.DateUtil;
+import com.andwho.myplan.view.RoundedImageView;
 import com.andwho.myplan.view.SpDatePickerDialog;
 
 /**
@@ -43,7 +47,8 @@ public class PersonalSettingAct extends BaseAct implements OnClickListener {
 
 	private LinearLayout ll_headicon, ll_nickname, ll_gender, ll_birthday,
 			ll_life;
-	private ImageView iv_headicon, iv_male, iv_female;
+	private RoundedImageView iv_headicon;
+	private ImageView iv_male, iv_female;
 	private TextView tv_nickname, tv_birthday, tv_lifespan;
 
 	@Override
@@ -80,7 +85,7 @@ public class PersonalSettingAct extends BaseAct implements OnClickListener {
 		ll_birthday = (LinearLayout) this.findViewById(R.id.ll_birthday);
 		ll_life = (LinearLayout) this.findViewById(R.id.ll_life);
 
-		iv_headicon = (ImageView) this.findViewById(R.id.iv_headicon);
+		iv_headicon = (RoundedImageView) this.findViewById(R.id.iv_headicon);
 		iv_male = (ImageView) this.findViewById(R.id.iv_male);
 		iv_female = (ImageView) this.findViewById(R.id.iv_female);
 
@@ -110,6 +115,7 @@ public class PersonalSettingAct extends BaseAct implements OnClickListener {
 	}
 
 	public void initData() {
+		initHeadPic();
 		String nickname = MyPlanPreference.getInstance(myselfContext)
 				.getNickname();
 		tv_nickname.setText(nickname);
@@ -118,6 +124,29 @@ public class PersonalSettingAct extends BaseAct implements OnClickListener {
 		String lifeSpan = MyPlanPreference.getInstance(myselfContext)
 				.getLifeSpan();
 		tv_lifespan.setText(lifeSpan);
+	}
+
+	private void initHeadPic() {
+		try {
+			String picUrl = MyPlanPreference.getInstance(myselfContext)
+					.getHeadPicUrl();
+			if (TextUtils.isEmpty(picUrl)) {
+				iv_headicon.setImageResource(R.drawable.default_headicon);
+				return;
+			}
+			Uri uri = Uri.parse(picUrl);
+			ContentResolver contentProvider = myselfContext
+					.getContentResolver();
+			Bitmap bmp = BitmapFactory.decodeStream(contentProvider
+					.openInputStream(uri));
+			iv_headicon.setImageBitmap(Bitmap.createScaledBitmap(bmp, 200, 200,
+					true));
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			iv_headicon.setImageResource(R.drawable.default_headicon);
+			e.printStackTrace();
+		}
 	}
 
 	private void initGender() {
@@ -140,7 +169,7 @@ public class PersonalSettingAct extends BaseAct implements OnClickListener {
 			finish();
 			break;
 		case R.id.ll_headicon:
-
+			showIconSelectDialog();
 			break;
 		case R.id.ll_nickname:
 			IntentHelper.showModifyInfo(myselfContext, "nickname");
@@ -267,6 +296,89 @@ public class PersonalSettingAct extends BaseAct implements OnClickListener {
 
 				});
 		spDateDialog.show();
+
+	}
+
+	private void showIconSelectDialog() {
+
+		final String[] strArray = getResources().getStringArray(
+				R.array.mine_icon_sel_array);
+
+		new AlertDialog.Builder(myselfContext)
+				.setTitle("请选择")
+				.setSingleChoiceItems(strArray, 2,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									final int which) {
+								dialog.cancel();
+								switch (which) {
+								case 0: // 拍照
+									takePicture();
+									break;
+								case 1: // 相册
+									openAlbum();
+									break;
+								}
+							}
+						}).show();
+	}
+
+	private void takePicture() {
+		if (Environment.getExternalStorageState().equals(
+				Environment.MEDIA_MOUNTED)
+				&& Environment.getExternalStorageDirectory().exists()) {
+			String fileName = String.valueOf(System.currentTimeMillis())
+					+ ".jpg";
+			Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+			Uri pictureUri = Uri.fromFile(new File(Environment
+					.getExternalStorageDirectory(), fileName));
+			MyPlanPreference.getInstance(myselfContext).setTempPicUrl(
+					pictureUri.toString());
+			intent.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
+			myselfContext.startActivityForResult(intent, REQUEST_CODE_CROP);
+
+		} else {
+			Toast.makeText(myselfContext, R.string.take_photo_msg_no_sdcard,
+					Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	private void openAlbum() {
+		Intent openAlbumIntent = new Intent(Intent.ACTION_GET_CONTENT);
+		openAlbumIntent.setDataAndType(
+				MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+		myselfContext
+				.startActivityForResult(openAlbumIntent, REQUEST_CODE_CROP);
+	}
+
+	private static final int REQUEST_CODE_CROP = 1245;
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		switch (requestCode) {
+		case REQUEST_CODE_CROP:
+			if (resultCode == Activity.RESULT_OK) {
+				// 拍照
+				Uri uri = Uri.parse(MyPlanPreference.getInstance(myselfContext)
+						.getTempPicUrl());
+
+				// 相册取图片
+				if (data != null) {
+					uri = data.getData();
+				}
+
+				MyPlanPreference.getInstance(myselfContext).setHeadPicUrl(
+						uri.toString());
+				initHeadPic();
+			}
+			break;
+
+		default:
+			break;
+		}
 
 	}
 

@@ -1,17 +1,20 @@
 package com.andwho.myplan.fragment;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.Html;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,6 +30,7 @@ import com.andwho.myplan.model.Plan;
 import com.andwho.myplan.preference.MyPlanPreference;
 import com.andwho.myplan.utils.DateUtil;
 import com.andwho.myplan.utils.MyPlanUtil;
+import com.andwho.myplan.view.RoundedImageView;
 
 /**
  * @author ouyyx 我的
@@ -42,7 +46,7 @@ public class MineFrag extends Fragment implements OnClickListener {
 	private ImageView iv_ss;
 
 	private ScrollView ll_root;
-	private ImageView iv_headicon;
+	private RoundedImageView iv_headicon;
 	private TextView tv_name, tv_if, tv_left1, tv_left2;
 
 	private TextView tv_total_everyday, tv_finish_everyday, tv_rate_everyday;
@@ -67,7 +71,7 @@ public class MineFrag extends Fragment implements OnClickListener {
 		iv_ss = (ImageView) view.findViewById(R.id.iv_ss);
 		ll_root = (ScrollView) view.findViewById(R.id.ll_root);
 		// top
-		iv_headicon = (ImageView) view.findViewById(R.id.iv_headicon);
+		iv_headicon = (RoundedImageView) view.findViewById(R.id.iv_headicon);
 		tv_name = (TextView) view.findViewById(R.id.tv_name);
 		tv_if = (TextView) view.findViewById(R.id.tv_if);
 		tv_left1 = (TextView) view.findViewById(R.id.tv_left1);
@@ -109,6 +113,7 @@ public class MineFrag extends Fragment implements OnClickListener {
 	}
 
 	private void initContent() {
+		initHeadPic();
 		String nickname = MyPlanPreference.getInstance(myselfContext)
 				.getNickname();
 		tv_name.setText(nickname);
@@ -163,6 +168,29 @@ public class MineFrag extends Fragment implements OnClickListener {
 		}
 	}
 
+	private void initHeadPic() {
+		try {
+			String picUrl = MyPlanPreference.getInstance(myselfContext)
+					.getHeadPicUrl();
+			if (TextUtils.isEmpty(picUrl)) {
+				iv_headicon.setImageResource(R.drawable.default_headicon);
+				return;
+			}
+			Uri uri = Uri.parse(picUrl);
+			ContentResolver contentProvider = myselfContext
+					.getContentResolver();
+			Bitmap bmp = BitmapFactory.decodeStream(contentProvider
+					.openInputStream(uri));
+			iv_headicon.setImageBitmap(Bitmap.createScaledBitmap(bmp, 200, 200,
+					true));
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			iv_headicon.setImageResource(R.drawable.default_headicon);
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public void onClick(View view) {
 		// TODO Auto-generated method stub

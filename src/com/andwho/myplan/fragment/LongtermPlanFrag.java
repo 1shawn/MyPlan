@@ -1,12 +1,12 @@
 package com.andwho.myplan.fragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager.LayoutParams;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,6 +20,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -29,7 +30,6 @@ import com.andwho.myplan.R;
 import com.andwho.myplan.activity.IntentHelper;
 import com.andwho.myplan.contentprovider.DbManger;
 import com.andwho.myplan.model.Plan;
-import com.andwho.myplan.utils.Log;
 import com.andwho.myplan.utils.MyPlanUtil;
 import com.andwho.myplan.view.myexpandablelistview.PullToRefreshBase;
 import com.andwho.myplan.view.myexpandablelistview.PullToRefreshBase.Mode;
@@ -44,6 +44,8 @@ public class LongtermPlanFrag extends Fragment implements OnClickListener {
 	private static final String TAG = LongtermPlanFrag.class.getSimpleName();
 
 	private Activity myselfContext;
+
+	private TextView tv_nocontent;
 
 	private PullToRefreshListView listview;
 	private ListAdapter listAdapter;
@@ -64,7 +66,7 @@ public class LongtermPlanFrag extends Fragment implements OnClickListener {
 
 		View view = inflater.inflate(R.layout.frag_longterm_plan, container,
 				false);
-
+		tv_nocontent = (TextView) view.findViewById(R.id.tv_nocontent);
 		listview = (PullToRefreshListView) view.findViewById(R.id.listview);
 		return view;
 	}
@@ -100,9 +102,10 @@ public class LongtermPlanFrag extends Fragment implements OnClickListener {
 
 		@Override
 		public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-				int arg2, long arg3) {
+				int position, long arg3) {
 			// TODO Auto-generated method stub
-			initPopuptWindow(arg1);
+			Plan plan = listAdapter.getItem(position - 1);
+			initPopuptWindow(arg1, plan);
 			return true;
 		}
 
@@ -110,8 +113,6 @@ public class LongtermPlanFrag extends Fragment implements OnClickListener {
 
 	private void init() {
 		//
-		Log.e(TAG, "@@...myplan..init ");
-
 	}
 
 	@Override
@@ -122,11 +123,20 @@ public class LongtermPlanFrag extends Fragment implements OnClickListener {
 	}
 
 	private void initList() {
-		listAdapter = new ListAdapter(myselfContext, DbManger.getInstance(
-				myselfContext).queryPlans("0"));
-		listview.setAdapter(listAdapter);
-		listview.setOnItemClickListener(mOnItemClickListener);
-		listview.setOnItemLongClickListener(mOnItemLongClickListener);
+		ArrayList<Plan> list = DbManger.getInstance(myselfContext).queryPlans(
+				"0");
+		if (list != null && list.size() > 0) {
+			tv_nocontent.setVisibility(View.GONE);
+			listview.setVisibility(View.VISIBLE);
+
+			listAdapter = new ListAdapter(myselfContext, list);
+			listview.setAdapter(listAdapter);
+			listview.setOnItemClickListener(mOnItemClickListener);
+			listview.setOnItemLongClickListener(mOnItemLongClickListener);
+		} else {
+			listview.setVisibility(View.GONE);
+			tv_nocontent.setVisibility(View.VISIBLE);
+		}
 	}
 
 	private class ListAdapter extends BaseAdapter {
@@ -167,6 +177,8 @@ public class LongtermPlanFrag extends Fragment implements OnClickListener {
 						R.layout.plans_child_item, null);
 				holder.tv_name = (TextView) convertView
 						.findViewById(R.id.tv_name);
+				holder.iv_iscompleted = (ImageView) convertView
+						.findViewById(R.id.iv_iscompleted);
 
 				convertView.setTag(holder);
 
@@ -175,11 +187,17 @@ public class LongtermPlanFrag extends Fragment implements OnClickListener {
 			}
 			Plan plan = data.get(position);
 			holder.tv_name.setText(plan.content);
+			if ("1".equals(plan.iscompleted)) {
+				holder.iv_iscompleted.setVisibility(View.VISIBLE);
+			} else {
+				holder.iv_iscompleted.setVisibility(View.GONE);
+			}
 			return convertView;
 		}
 
 		class ViewHolder {
 			TextView tv_name;
+			ImageView iv_iscompleted;
 		}
 
 	}
@@ -190,7 +208,7 @@ public class LongtermPlanFrag extends Fragment implements OnClickListener {
 
 	}
 
-	protected void initPopuptWindow(View view) {
+	protected void initPopuptWindow(View view, final Plan plan) {
 		// TODO Auto-generated method stub
 
 		View popupWindow_view = ((LayoutInflater) myselfContext
@@ -235,10 +253,9 @@ public class LongtermPlanFrag extends Fragment implements OnClickListener {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				// if (fragment != null) {
-				// AppHepler.showGoodsEdit(myselfContext,
-				// fragment.getGoodsDetailInfo());
-				// }
+				plan.iscompleted = "1";
+				DbManger.getInstance(myselfContext).updatePlan(plan);
+				initList();
 				popupWindow.dismiss();
 			}
 		});
@@ -249,6 +266,8 @@ public class LongtermPlanFrag extends Fragment implements OnClickListener {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				// showDeleteWarningTips();
+				DbManger.getInstance(myselfContext).deletePlan(plan.planid);
+				initList();
 				popupWindow.dismiss();
 			}
 		});

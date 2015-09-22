@@ -14,6 +14,9 @@ public final class R {
         public static final int slide_out_to_bottom=0x7f040002;
         public static final int slide_out_to_top=0x7f040003;
     }
+    public static final class array {
+        public static final int mine_icon_sel_array=0x7f080000;
+    }
     public static final class attr {
         /** <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
 <p>This may also be a reference to a resource (in the form
@@ -512,98 +515,100 @@ containing a value of this type.
         public static final int icon_back=0x7f02000b;
         public static final int icon_female_press=0x7f02000c;
         public static final int icon_female_unpress=0x7f02000d;
-        public static final int icon_male_press=0x7f02000e;
-        public static final int icon_male_unpress=0x7f02000f;
-        public static final int icon_next_day_normal=0x7f020010;
-        public static final int icon_right=0x7f020011;
-        public static final int icon_save=0x7f020012;
-        public static final int indicator_arrow=0x7f020013;
-        public static final int indicator_bg_bottom=0x7f020014;
-        public static final int indicator_bg_top=0x7f020015;
-        public static final int mine_press=0x7f020016;
-        public static final int mine_unpress=0x7f020017;
-        public static final int plan_press=0x7f020018;
-        public static final int plan_unpress=0x7f020019;
-        public static final int tab_mine_selector=0x7f02001a;
-        public static final int tab_plan_selector=0x7f02001b;
-        public static final int welcome=0x7f02001c;
+        public static final int icon_iscompleted=0x7f02000e;
+        public static final int icon_male_press=0x7f02000f;
+        public static final int icon_male_unpress=0x7f020010;
+        public static final int icon_next_day_normal=0x7f020011;
+        public static final int icon_right=0x7f020012;
+        public static final int icon_save=0x7f020013;
+        public static final int indicator_arrow=0x7f020014;
+        public static final int indicator_bg_bottom=0x7f020015;
+        public static final int indicator_bg_top=0x7f020016;
+        public static final int mine_press=0x7f020017;
+        public static final int mine_unpress=0x7f020018;
+        public static final int plan_press=0x7f020019;
+        public static final int plan_unpress=0x7f02001a;
+        public static final int tab_mine_selector=0x7f02001b;
+        public static final int tab_plan_selector=0x7f02001c;
+        public static final int welcome=0x7f02001d;
     }
     public static final class id {
-        public static final int bg=0x7f090009;
-        public static final int both=0x7f090003;
-        public static final int btn1=0x7f090044;
-        public static final int btn2=0x7f090045;
-        public static final int disabled=0x7f090000;
-        public static final int et=0x7f090014;
-        public static final int expandable_list=0x7f090027;
-        public static final int fl_inner=0x7f090046;
-        public static final int flip=0x7f090008;
-        public static final int iv_arrow=0x7f090043;
-        public static final int iv_bg=0x7f090026;
-        public static final int iv_female=0x7f090020;
-        public static final int iv_group_indicator=0x7f090042;
-        public static final int iv_headicon=0x7f09001b;
-        public static final int iv_male=0x7f09001f;
-        public static final int iv_mine=0x7f09000f;
-        public static final int iv_plan=0x7f090012;
-        public static final int iv_rightIcon=0x7f09003f;
-        public static final int iv_ss=0x7f090029;
-        public static final int listview=0x7f090028;
-        public static final int ll=0x7f090040;
-        public static final int ll_about=0x7f090019;
-        public static final int ll_birthday=0x7f090021;
-        public static final int ll_bottom=0x7f09000d;
-        public static final int ll_content=0x7f09000c;
-        public static final int ll_content2=0x7f09003a;
-        public static final int ll_encourage=0x7f090017;
-        public static final int ll_gender=0x7f09001e;
-        public static final int ll_headicon=0x7f09001a;
-        public static final int ll_leftIcon=0x7f09003c;
-        public static final int ll_life=0x7f090023;
-        public static final int ll_nickname=0x7f09001c;
-        public static final int ll_personal_setting=0x7f090015;
-        public static final int ll_problems=0x7f090016;
-        public static final int ll_root=0x7f09000b;
-        public static final int ll_share=0x7f090018;
-        public static final int manualOnly=0x7f090004;
-        public static final int pullDownFromTop=0x7f090005;
-        public static final int pullFromEnd=0x7f090002;
-        public static final int pullFromStart=0x7f090001;
-        public static final int pullUpFromBottom=0x7f090006;
-        public static final int pull_to_refresh_image=0x7f090047;
-        public static final int pull_to_refresh_progress=0x7f090048;
-        public static final int pull_to_refresh_sub_text=0x7f09004a;
-        public static final int pull_to_refresh_text=0x7f090049;
-        public static final int rl_everyday_plan=0x7f090034;
-        public static final int rl_longterm_plan=0x7f090037;
-        public static final int rl_mine=0x7f09000e;
-        public static final int rl_plan=0x7f090011;
-        public static final int rl_titleBar=0x7f09003b;
-        public static final int rotate=0x7f090007;
-        public static final int tv_birthday=0x7f090022;
-        public static final int tv_everyday_plan=0x7f090035;
-        public static final int tv_finish_everyday=0x7f09002f;
-        public static final int tv_finish_longterm=0x7f090032;
-        public static final int tv_goods_num=0x7f090041;
-        public static final int tv_if=0x7f09002b;
-        public static final int tv_left1=0x7f09002c;
-        public static final int tv_left2=0x7f09002d;
-        public static final int tv_leftIcon=0x7f09003d;
-        public static final int tv_lifespan=0x7f090024;
-        public static final int tv_longterm_plan=0x7f090038;
-        public static final int tv_mine=0x7f090010;
-        public static final int tv_name=0x7f09002a;
-        public static final int tv_nickname=0x7f09001d;
-        public static final int tv_plan=0x7f090013;
-        public static final int tv_rate_everyday=0x7f090030;
-        public static final int tv_rate_longterm=0x7f090033;
-        public static final int tv_title=0x7f09003e;
-        public static final int tv_total_everyday=0x7f09002e;
-        public static final int tv_total_longterm=0x7f090031;
-        public static final int tv_version=0x7f09000a;
-        public static final int v_everyday_plan=0x7f090036;
-        public static final int v_longterm_plan=0x7f090039;
-        public static final int wv=0x7f090025;
+        public static final int bg=0x7f0a0009;
+        public static final int both=0x7f0a0003;
+        public static final int btn1=0x7f0a0045;
+        public static final int btn2=0x7f0a0046;
+        public static final int disabled=0x7f0a0000;
+        public static final int et=0x7f0a0014;
+        public static final int expandable_list=0x7f0a0028;
+        public static final int fl_inner=0x7f0a0047;
+        public static final int flip=0x7f0a0008;
+        public static final int iv_arrow=0x7f0a0044;
+        public static final int iv_bg=0x7f0a0026;
+        public static final int iv_female=0x7f0a0020;
+        public static final int iv_group_indicator=0x7f0a0043;
+        public static final int iv_headicon=0x7f0a001b;
+        public static final int iv_iscompleted=0x7f0a0042;
+        public static final int iv_male=0x7f0a001f;
+        public static final int iv_mine=0x7f0a000f;
+        public static final int iv_plan=0x7f0a0012;
+        public static final int iv_rightIcon=0x7f0a0040;
+        public static final int iv_ss=0x7f0a002a;
+        public static final int listview=0x7f0a0029;
+        public static final int ll=0x7f0a0041;
+        public static final int ll_about=0x7f0a0019;
+        public static final int ll_birthday=0x7f0a0021;
+        public static final int ll_bottom=0x7f0a000d;
+        public static final int ll_content=0x7f0a000c;
+        public static final int ll_content2=0x7f0a003b;
+        public static final int ll_encourage=0x7f0a0017;
+        public static final int ll_gender=0x7f0a001e;
+        public static final int ll_headicon=0x7f0a001a;
+        public static final int ll_leftIcon=0x7f0a003d;
+        public static final int ll_life=0x7f0a0023;
+        public static final int ll_nickname=0x7f0a001c;
+        public static final int ll_personal_setting=0x7f0a0015;
+        public static final int ll_problems=0x7f0a0016;
+        public static final int ll_root=0x7f0a000b;
+        public static final int ll_share=0x7f0a0018;
+        public static final int manualOnly=0x7f0a0004;
+        public static final int pullDownFromTop=0x7f0a0005;
+        public static final int pullFromEnd=0x7f0a0002;
+        public static final int pullFromStart=0x7f0a0001;
+        public static final int pullUpFromBottom=0x7f0a0006;
+        public static final int pull_to_refresh_image=0x7f0a0048;
+        public static final int pull_to_refresh_progress=0x7f0a0049;
+        public static final int pull_to_refresh_sub_text=0x7f0a004b;
+        public static final int pull_to_refresh_text=0x7f0a004a;
+        public static final int rl_everyday_plan=0x7f0a0035;
+        public static final int rl_longterm_plan=0x7f0a0038;
+        public static final int rl_mine=0x7f0a000e;
+        public static final int rl_plan=0x7f0a0011;
+        public static final int rl_titleBar=0x7f0a003c;
+        public static final int rotate=0x7f0a0007;
+        public static final int tv_birthday=0x7f0a0022;
+        public static final int tv_everyday_plan=0x7f0a0036;
+        public static final int tv_finish_everyday=0x7f0a0030;
+        public static final int tv_finish_longterm=0x7f0a0033;
+        public static final int tv_if=0x7f0a002c;
+        public static final int tv_left1=0x7f0a002d;
+        public static final int tv_left2=0x7f0a002e;
+        public static final int tv_leftIcon=0x7f0a003e;
+        public static final int tv_lifespan=0x7f0a0024;
+        public static final int tv_longterm_plan=0x7f0a0039;
+        public static final int tv_mine=0x7f0a0010;
+        public static final int tv_name=0x7f0a002b;
+        public static final int tv_nickname=0x7f0a001d;
+        public static final int tv_nocontent=0x7f0a0027;
+        public static final int tv_plan=0x7f0a0013;
+        public static final int tv_rate_everyday=0x7f0a0031;
+        public static final int tv_rate_longterm=0x7f0a0034;
+        public static final int tv_title=0x7f0a003f;
+        public static final int tv_total_everyday=0x7f0a002f;
+        public static final int tv_total_longterm=0x7f0a0032;
+        public static final int tv_version=0x7f0a000a;
+        public static final int v_everyday_plan=0x7f0a0037;
+        public static final int v_longterm_plan=0x7f0a003a;
+        public static final int wv=0x7f0a0025;
     }
     public static final class layout {
         public static final int act_about_us=0x7f030000;
@@ -640,6 +645,8 @@ containing a value of this type.
         public static final int pull_to_refresh_pull_label=0x7f070006;
         public static final int pull_to_refresh_refreshing_label=0x7f070008;
         public static final int pull_to_refresh_release_label=0x7f070007;
+        public static final int str_operation_failed=0x7f07000d;
+        public static final int take_photo_msg_no_sdcard=0x7f07000c;
     }
     public static final class style {
         /** 
@@ -652,11 +659,12 @@ containing a value of this type.
             backward-compatibility can go here.
         
          */
-        public static final int AppBaseTheme=0x7f080000;
+        public static final int AppBaseTheme=0x7f090000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f080001;
+        public static final int AppTheme=0x7f090001;
+        public static final int Dialog=0x7f090002;
     }
     public static final class styleable {
         /** Attributes that can be used with a PullToRefresh.

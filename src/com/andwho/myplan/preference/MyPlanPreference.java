@@ -33,7 +33,7 @@ public class MyPlanPreference {
 	public String getNickname() {
 		spf = context.getSharedPreferences(MYPLAN_NAME, Context.MODE_PRIVATE);
 
-		return spf.getString(NICKNAME, "你的名字");
+		return spf.getString(NICKNAME, "昵称");
 	}
 
 	public void setNickname(String name) {
@@ -77,5 +77,31 @@ public class MyPlanPreference {
 	public void setLifeSpan(String lifespan) {
 		spf = context.getSharedPreferences(MYPLAN_NAME, Context.MODE_PRIVATE);
 		spf.edit().putString(LIFESPAN, lifespan).commit();
+	}
+
+	private static final String TEMP_PIC_URL = "temp_pic_url";
+
+	public String getTempPicUrl() {
+		spf = context.getSharedPreferences(MYPLAN_NAME, Context.MODE_PRIVATE);
+		return spf.getString(TEMP_PIC_URL, "");
+
+	}
+
+	public void setTempPicUrl(String tempPicUrl) {
+		spf = context.getSharedPreferences(MYPLAN_NAME, Context.MODE_PRIVATE);
+		spf.edit().putString(TEMP_PIC_URL, tempPicUrl).commit();
+	}
+
+	private static final String HEAD_PIC_URL = "head_pic_url";
+
+	public String getHeadPicUrl() {
+		spf = context.getSharedPreferences(MYPLAN_NAME, Context.MODE_PRIVATE);
+		return spf.getString(HEAD_PIC_URL, "");
+
+	}
+
+	public void setHeadPicUrl(String headPicUrl) {
+		spf = context.getSharedPreferences(MYPLAN_NAME, Context.MODE_PRIVATE);
+		spf.edit().putString(HEAD_PIC_URL, headPicUrl).commit();
 	}
 }

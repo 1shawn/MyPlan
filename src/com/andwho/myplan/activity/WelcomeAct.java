@@ -45,7 +45,7 @@ public class WelcomeAct extends BaseAct {
 				gotoIndexAct();
 				finish();
 			}
-		}, 3000);
+		}, 2000);
 	}
 
 	private void gotoIndexAct() {

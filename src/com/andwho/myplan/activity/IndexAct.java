@@ -47,7 +47,7 @@ public class IndexAct extends BaseAct implements OnClickListener {
 	}
 
 	private void init() {
-		Log.e(TAG, "@@...测试提交到github");
+		Log.d(TAG, "@@...测试提交到github");
 		switchItemSelected(0);
 	}
 
@@ -67,26 +67,26 @@ public class IndexAct extends BaseAct implements OnClickListener {
 		}
 	}
 
+	Fragment content1 = new MineFrag();
+	Fragment content2 = new PlanFrag();
+
 	private void switchItemSelected(int position) {
-		Fragment content = null;
 		switch (position) {
 		case 0:
 			rl_mine.setSelected(true);
 			rl_plan.setSelected(false);
-			content = new MineFrag();
+			getSupportFragmentManager().beginTransaction()
+					.replace(R.id.ll_content, content1).commit();
 			break;
 		case 1:
 			rl_mine.setSelected(false);
 			rl_plan.setSelected(true);
-			content = new PlanFrag();
+			getSupportFragmentManager().beginTransaction()
+					.replace(R.id.ll_content, content2).commit();
+
 			break;
 		default:
 			break;
-		}
-
-		if (content != null) {
-			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.ll_content, content).commit();
 		}
 
 	}

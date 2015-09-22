@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager.LayoutParams;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -49,6 +50,8 @@ public class EverydayPlanFrag extends Fragment implements OnClickListener {
 
 	private Activity myselfContext;
 
+	private TextView tv_nocontent;
+
 	private PullToRefreshExpandableListView expandable_list;
 
 	private ExpandableListAdapter listAdapter;
@@ -70,7 +73,7 @@ public class EverydayPlanFrag extends Fragment implements OnClickListener {
 		View view = inflater.inflate(R.layout.frag_everyday_plan, container,
 				false);
 
-		// cinema_title = (TextView) view.findViewById(R.id.cinema_title);
+		tv_nocontent = (TextView) view.findViewById(R.id.tv_nocontent);
 		expandable_list = (PullToRefreshExpandableListView) view
 				.findViewById(R.id.expandable_list);
 		return view;
@@ -94,45 +97,58 @@ public class EverydayPlanFrag extends Fragment implements OnClickListener {
 	private void initList() {
 		ArrayList<DatePlans> listData = DbManger.getInstance(myselfContext)
 				.getEverydayPlanData();
-		listAdapter = new ExpandableListAdapter(listData);
-		View view = LayoutInflater.from(myselfContext).inflate(
-				R.layout.plans_group_item, null, false);
-		expandable_list.setPinnedHeaderView(view);
-		expandable_list.setOnPinnedHeaderClickLisenter(new OnClickListener() {
+		if (listData != null && listData.size() > 0) {
+			expandable_list.setVisibility(View.VISIBLE);
+			tv_nocontent.setVisibility(View.GONE);
 
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Integer groupPosition = (Integer) v.getTag();
-				boolean isContains = expandPositions.contains(groupPosition);
-				if (isContains) {
-					expandable_list.collapseGroup(groupPosition);
-				} else {
-					expandable_list.expandGroup(groupPosition);
+			listAdapter = new ExpandableListAdapter(listData);
+			View view = LayoutInflater.from(myselfContext).inflate(
+					R.layout.plans_group_item, null, false);
+			expandable_list.setPinnedHeaderView(view);
+			expandable_list
+					.setOnPinnedHeaderClickLisenter(new OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							Integer groupPosition = (Integer) v.getTag();
+							boolean isContains = expandPositions
+									.contains(groupPosition);
+							if (isContains) {
+								expandable_list.collapseGroup(groupPosition);
+							} else {
+								expandable_list.expandGroup(groupPosition);
+							}
+
+						}
+					});
+			expandable_list.setOnChildClickListener(new OnChildClickListener() {
+
+				@Override
+				public boolean onChildClick(ExpandableListView parent, View v,
+						int groupPosition, int childPosition, long id) {
+					// TODO Auto-generated method stub
+					final Plan plan = listAdapter.getChild(groupPosition,
+							childPosition);
+					IntentHelper.showPlanEdit(myselfContext, "1", plan);
+					return true;
 				}
+			});
+			expandable_list
+					.setOnItemLongClickListener(mOnItemLongClickListener);
 
+			expandable_list.setMode(Mode.DISABLED);
+			expandable_list.setAdapter(listAdapter);
+
+			for (int i = 0; i < listData.size(); i++) {
+				expandable_list.expandGroup(i);
 			}
-		});
-		expandable_list.setOnChildClickListener(new OnChildClickListener() {
 
-			@Override
-			public boolean onChildClick(ExpandableListView parent, View v,
-					int groupPosition, int childPosition, long id) {
-				// TODO Auto-generated method stub
-				final Plan plan = listAdapter.getChild(groupPosition,
-						childPosition);
-				IntentHelper.showPlanEdit(myselfContext, "1", plan);
-				return true;
-			}
-		});
-		expandable_list.setOnItemLongClickListener(mOnItemLongClickListener);
-
-		expandable_list.setMode(Mode.DISABLED);
-		expandable_list.setAdapter(listAdapter);
-
-		for (int i = 0; i < listData.size(); i++) {
-			expandable_list.expandGroup(i);
+		} else {
+			tv_nocontent.setVisibility(View.VISIBLE);
+			expandable_list.setVisibility(View.GONE);
 		}
+
 	}
 
 	private OnItemLongClickListener mOnItemLongClickListener = new OnItemLongClickListener() {
@@ -146,7 +162,7 @@ public class EverydayPlanFrag extends Fragment implements OnClickListener {
 		}
 
 	};
-	
+
 	private Set<Integer> expandPositions = new HashSet<Integer>();
 
 	@SuppressLint("InflateParams")
@@ -273,23 +289,21 @@ public class EverydayPlanFrag extends Fragment implements OnClickListener {
 						R.layout.plans_child_item, null);
 				viewHolder.ll = (LinearLayout) view.findViewById(R.id.ll);
 				viewHolder.tv_name = (TextView) view.findViewById(R.id.tv_name);
-				viewHolder.tv_goods_num = (TextView) view
-						.findViewById(R.id.tv_goods_num);
+				viewHolder.iv_iscompleted = (ImageView) view
+						.findViewById(R.id.iv_iscompleted);
 				view.setTag(viewHolder);
 			} else {
 				viewHolder = (ChildViewHolder) view.getTag();
 			}
 
-			final Plan subCategory = getChild(groupPosition, childPosition);
+			final Plan plan = getChild(groupPosition, childPosition);
 
-			if (subCategory != null) {
-				viewHolder.tv_name.setText(subCategory.content);
-				viewHolder.tv_goods_num.setText("");
+			viewHolder.tv_name.setText(plan.content);
+			if ("1".equals(plan.iscompleted)) {
+				viewHolder.iv_iscompleted.setVisibility(View.VISIBLE);
 			} else {
-				viewHolder.tv_name.setText("");
-				viewHolder.tv_goods_num.setText("");
+				viewHolder.iv_iscompleted.setVisibility(View.GONE);
 			}
-
 			// viewHolder.ll.setOnLongClickListener(new OnLongClickListener() {
 			//
 			// @Override
@@ -306,7 +320,8 @@ public class EverydayPlanFrag extends Fragment implements OnClickListener {
 
 		final class ChildViewHolder {
 			LinearLayout ll;
-			TextView tv_name, tv_goods_num;
+			TextView tv_name;
+			ImageView iv_iscompleted;
 		}
 
 		final class GroupViewHolder {
@@ -406,7 +421,7 @@ public class EverydayPlanFrag extends Fragment implements OnClickListener {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-			 
+
 				popupWindow.dismiss();
 			}
 		});
