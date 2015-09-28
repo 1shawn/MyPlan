@@ -6,12 +6,13 @@ import java.util.Set;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager.LayoutParams;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -27,7 +28,6 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -44,7 +44,7 @@ import com.andwho.myplan.view.myexpandablelistview.PullToRefreshExpandableListVi
 /**
  * @author ouyyx 每日计划
  */
-public class EverydayPlanFrag extends Fragment implements OnClickListener {
+public class EverydayPlanFrag extends BaseFrag implements OnClickListener {
 
 	private static final String TAG = EverydayPlanFrag.class.getSimpleName();
 
@@ -155,9 +155,13 @@ public class EverydayPlanFrag extends Fragment implements OnClickListener {
 
 		@Override
 		public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-				int arg2, long arg3) {
+				int position, long arg3) {
 			// TODO Auto-generated method stub
-			initPopuptWindow(arg1);
+			Object obj = arg0.getAdapter().getItem(position);
+			if (obj instanceof Plan) {
+				Plan plan = (Plan) obj;
+				initPopuptWindow(arg1, plan);
+			}
 			return true;
 		}
 
@@ -244,7 +248,6 @@ public class EverydayPlanFrag extends Fragment implements OnClickListener {
 				viewHolder = new GroupViewHolder();
 				view = LayoutInflater.from(myselfContext).inflate(
 						R.layout.plans_group_item, null);
-
 				viewHolder.tv_name = (TextView) view.findViewById(R.id.tv_name);
 				viewHolder.iv_group_indicator = (ImageView) view
 						.findViewById(R.id.iv_group_indicator);
@@ -253,13 +256,13 @@ public class EverydayPlanFrag extends Fragment implements OnClickListener {
 				viewHolder = (GroupViewHolder) view.getTag();
 			}
 
-			DatePlans category = getGroup(groupPosition);
+			DatePlans plans = getGroup(groupPosition);
 
-			if (category == null) {
+			if (plans == null) {
 				return view;
 			}
 
-			viewHolder.tv_name.setText(category.date);
+			viewHolder.tv_name.setText(plans.date);
 			if (!isExpanded) {
 				viewHolder.iv_group_indicator
 						.setImageResource(R.drawable.icon_arrow_collapsed);
@@ -287,7 +290,6 @@ public class EverydayPlanFrag extends Fragment implements OnClickListener {
 				viewHolder = new ChildViewHolder();
 				view = LayoutInflater.from(myselfContext).inflate(
 						R.layout.plans_child_item, null);
-				viewHolder.ll = (LinearLayout) view.findViewById(R.id.ll);
 				viewHolder.tv_name = (TextView) view.findViewById(R.id.tv_name);
 				viewHolder.iv_iscompleted = (ImageView) view
 						.findViewById(R.id.iv_iscompleted);
@@ -299,27 +301,31 @@ public class EverydayPlanFrag extends Fragment implements OnClickListener {
 			final Plan plan = getChild(groupPosition, childPosition);
 
 			viewHolder.tv_name.setText(plan.content);
-			if ("1".equals(plan.iscompleted)) {
-				viewHolder.iv_iscompleted.setVisibility(View.VISIBLE);
-			} else {
-				viewHolder.iv_iscompleted.setVisibility(View.GONE);
-			}
-			// viewHolder.ll.setOnLongClickListener(new OnLongClickListener() {
-			//
-			// @Override
-			// public boolean onLongClick(View view) {
-			// // TODO Auto-generated method stub
-			// initPopuptWindow(view);
-			// return false;
+			// if ("1".equals(plan.iscompleted)) {
+			// viewHolder.iv_iscompleted.setVisibility(View.VISIBLE);
+			// } else {
+			// viewHolder.iv_iscompleted.setVisibility(View.GONE);
 			// }
-			// });
+
+			if ("1".equals(plan.iscompleted)) {
+				viewHolder.tv_name.getPaint().setFlags(
+						Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+				viewHolder.tv_name.setTextColor(Color.parseColor("#909090"));
+
+				// holder.iv_iscompleted.setVisibility(View.VISIBLE);
+			} else {
+				viewHolder.tv_name.getPaint().setFlags(Paint.ANTI_ALIAS_FLAG);
+				viewHolder.tv_name.setTextColor(Color.parseColor("#333333"));
+				// holder.iv_iscompleted.setVisibility(View.GONE);
+			}
+
+			;
 
 			return view;
 
 		}
 
 		final class ChildViewHolder {
-			LinearLayout ll;
 			TextView tv_name;
 			ImageView iv_iscompleted;
 		}
@@ -376,8 +382,11 @@ public class EverydayPlanFrag extends Fragment implements OnClickListener {
 
 	}
 
-	protected void initPopuptWindow(View view) {
+	protected void initPopuptWindow(View view, final Plan plan) {
 		// TODO Auto-generated method stub
+		Log.d(TAG, "@@...myplan,...initPopuptWindow ---> ");
+		Log.d(TAG, "@@...myplan,...content = " + plan.content);
+		Log.d(TAG, "@@...myplan,...createtime = " + plan.createtime);
 
 		View popupWindow_view = ((LayoutInflater) myselfContext
 				.getSystemService(Activity.LAYOUT_INFLATER_SERVICE)).inflate(
@@ -414,6 +423,11 @@ public class EverydayPlanFrag extends Fragment implements OnClickListener {
 
 		Button btn1 = (Button) popupWindow_view.findViewById(R.id.btn1);
 		Button btn2 = (Button) popupWindow_view.findViewById(R.id.btn2);
+		if ("1".equals(plan.iscompleted)) {
+			btn1.setVisibility(View.GONE);
+		} else {
+			btn1.setVisibility(View.VISIBLE);
+		}
 		btn1.setText("完成");
 		btn2.setText("删除");
 		btn1.setOnClickListener(new OnClickListener() {
@@ -421,7 +435,9 @@ public class EverydayPlanFrag extends Fragment implements OnClickListener {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-
+				plan.iscompleted = "1";
+				DbManger.getInstance(myselfContext).updatePlan(plan);
+				initList();
 				popupWindow.dismiss();
 			}
 		});
@@ -432,12 +448,36 @@ public class EverydayPlanFrag extends Fragment implements OnClickListener {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				// showDeleteWarningTips();
+				confirmDialog(plan);
 				popupWindow.dismiss();
 			}
 		});
 
-		popupWindow.showAsDropDown(view, view.getWidth() / 3, 0);
+		popupWindow.showAsDropDown(view, view.getWidth() / 5, -20);
 
 	}
 
+	private void confirmDialog(final Plan plan) {
+		AlertDialog.Builder dialog = new AlertDialog.Builder(myselfContext);
+		dialog.setCancelable(true);
+		dialog.setMessage("确定删除'" + plan.content + "'吗？");
+		dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				DbManger.getInstance(myselfContext).deletePlan(plan.planid);
+				initList();
+			}
+		});
+		dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+		dialog.show();
+	}
 }

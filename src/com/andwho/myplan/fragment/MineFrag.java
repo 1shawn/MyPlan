@@ -9,6 +9,7 @@ import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -35,7 +36,7 @@ import com.andwho.myplan.view.RoundedImageView;
 /**
  * @author ouyyx 我的
  */
-public class MineFrag extends Fragment implements OnClickListener {
+public class MineFrag extends BaseFrag implements OnClickListener {
 
 	private static final String TAG = MineFrag.class.getSimpleName();
 
@@ -113,7 +114,8 @@ public class MineFrag extends Fragment implements OnClickListener {
 	}
 
 	private void initContent() {
-		initHeadPic();
+		new LoadImageAsyncTask().execute();
+		
 		String nickname = MyPlanPreference.getInstance(myselfContext)
 				.getNickname();
 		tv_name.setText(nickname);
@@ -158,7 +160,7 @@ public class MineFrag extends Fragment implements OnClickListener {
 					+ "%");
 		}
 
-		if (everydayPlansFinishSize == 0 || longtermPlansSize == 0) {
+		if (longtermPlansFinishSize == 0 || longtermPlansSize == 0) {
 			tv_rate_longterm.setText("0%");
 		} else {
 			tv_rate_longterm.setText(MyPlanUtil.getFinishRate(
@@ -168,29 +170,51 @@ public class MineFrag extends Fragment implements OnClickListener {
 		}
 	}
 
-	private void initHeadPic() {
-		try {
-			String picUrl = MyPlanPreference.getInstance(myselfContext)
-					.getHeadPicUrl();
-			if (TextUtils.isEmpty(picUrl)) {
-				iv_headicon.setImageResource(R.drawable.default_headicon);
-				return;
-			}
-			Uri uri = Uri.parse(picUrl);
-			ContentResolver contentProvider = myselfContext
-					.getContentResolver();
-			Bitmap bmp = BitmapFactory.decodeStream(contentProvider
-					.openInputStream(uri));
-			iv_headicon.setImageBitmap(Bitmap.createScaledBitmap(bmp, 200, 200,
-					true));
+	private class LoadImageAsyncTask extends AsyncTask<Void, Void, Bitmap> {
 
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			iv_headicon.setImageResource(R.drawable.default_headicon);
-			e.printStackTrace();
+		@Override
+		protected Bitmap doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			try {
+				String picUrl = MyPlanPreference.getInstance(myselfContext)
+						.getHeadPicUrl();
+				if (TextUtils.isEmpty(picUrl)) {
+					return null;
+				}
+
+				Uri uri = Uri.parse(picUrl);
+				ContentResolver contentProvider = myselfContext
+						.getContentResolver();
+				Bitmap bmp = BitmapFactory.decodeStream(contentProvider
+						.openInputStream(uri));
+				return Bitmap.createScaledBitmap(bmp, 200, 200, true);
+
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				return null;
+			}
+
 		}
-	}
-	
+
+		@Override
+		protected void onPostExecute(Bitmap result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			if (result == null) {
+				iv_headicon.setImageResource(R.drawable.default_headicon);
+			} else {
+				iv_headicon.setImageBitmap(result);
+			}
+		}
+
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+		}
+
+	};
+
 	@Override
 	public void onClick(View view) {
 		// TODO Auto-generated method stub

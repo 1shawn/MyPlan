@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -115,7 +116,7 @@ public class PersonalSettingAct extends BaseAct implements OnClickListener {
 	}
 
 	public void initData() {
-		initHeadPic();
+		new LoadImageAsyncTask().execute();
 		String nickname = MyPlanPreference.getInstance(myselfContext)
 				.getNickname();
 		tv_nickname.setText(nickname);
@@ -126,28 +127,50 @@ public class PersonalSettingAct extends BaseAct implements OnClickListener {
 		tv_lifespan.setText(lifeSpan);
 	}
 
-	private void initHeadPic() {
-		try {
-			String picUrl = MyPlanPreference.getInstance(myselfContext)
-					.getHeadPicUrl();
-			if (TextUtils.isEmpty(picUrl)) {
-				iv_headicon.setImageResource(R.drawable.default_headicon);
-				return;
-			}
-			Uri uri = Uri.parse(picUrl);
-			ContentResolver contentProvider = myselfContext
-					.getContentResolver();
-			Bitmap bmp = BitmapFactory.decodeStream(contentProvider
-					.openInputStream(uri));
-			iv_headicon.setImageBitmap(Bitmap.createScaledBitmap(bmp, 200, 200,
-					true));
+	private class LoadImageAsyncTask extends AsyncTask<Void, Void, Bitmap> {
 
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			iv_headicon.setImageResource(R.drawable.default_headicon);
-			e.printStackTrace();
+		@Override
+		protected Bitmap doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			try {
+				String picUrl = MyPlanPreference.getInstance(myselfContext)
+						.getHeadPicUrl();
+				if (TextUtils.isEmpty(picUrl)) {
+					return null;
+				}
+
+				Uri uri = Uri.parse(picUrl);
+				ContentResolver contentProvider = myselfContext
+						.getContentResolver();
+				Bitmap bmp = BitmapFactory.decodeStream(contentProvider
+						.openInputStream(uri));
+				return Bitmap.createScaledBitmap(bmp, 200, 200, true);
+
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				return null;
+			}
+
 		}
-	}
+
+		@Override
+		protected void onPostExecute(Bitmap result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			if (result == null) {
+				iv_headicon.setImageResource(R.drawable.default_headicon);
+			} else {
+				iv_headicon.setImageBitmap(result);
+			}
+		}
+
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+		}
+
+	};
 
 	private void initGender() {
 		String gender = MyPlanPreference.getInstance(myselfContext).getGender();
@@ -372,7 +395,7 @@ public class PersonalSettingAct extends BaseAct implements OnClickListener {
 
 				MyPlanPreference.getInstance(myselfContext).setHeadPicUrl(
 						uri.toString());
-				initHeadPic();
+				new LoadImageAsyncTask().execute();
 			}
 			break;
 

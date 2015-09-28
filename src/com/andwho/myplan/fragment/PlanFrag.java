@@ -3,23 +3,28 @@ package com.andwho.myplan.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.andwho.myplan.R;
 import com.andwho.myplan.activity.IntentHelper;
 import com.andwho.myplan.utils.Log;
+import com.andwho.myplan.view.MyViewPager;
 
 /**
  * @author ouyyx 计划
  */
-public class PlanFrag extends Fragment implements OnClickListener {
+public class PlanFrag extends MyPlanViewPagerFrag implements OnClickListener {
 
 	private static final String TAG = PlanFrag.class.getSimpleName();
 
@@ -37,7 +42,6 @@ public class PlanFrag extends Fragment implements OnClickListener {
 		View view = findViews(inflater, container);
 		setListener();
 		init();
-
 		return view;
 	}
 
@@ -53,6 +57,8 @@ public class PlanFrag extends Fragment implements OnClickListener {
 
 		v_everyday_plan = (View) view.findViewById(R.id.v_everyday_plan);
 		v_longterm_plan = (View) view.findViewById(R.id.v_longterm_plan);
+
+		initViewPager(view);
 
 		return view;
 	}
@@ -72,7 +78,6 @@ public class PlanFrag extends Fragment implements OnClickListener {
 	}
 
 	private void init() {
-		switchItemSelected(0);
 	}
 
 	@Override
@@ -81,10 +86,12 @@ public class PlanFrag extends Fragment implements OnClickListener {
 		int id = view.getId();
 		switch (id) {
 		case R.id.rl_everyday_plan:
-			switchItemSelected(0);
+			setTabSelectedStatus(0);
+			setPageSelected(0);
 			break;
 		case R.id.rl_longterm_plan:
-			switchItemSelected(1);
+			setTabSelectedStatus(1);
+			setPageSelected(1);
 			break;
 		case R.id.iv_rightIcon:
 			IntentHelper.showPlanEdit(myselfContext, planType);
@@ -96,8 +103,7 @@ public class PlanFrag extends Fragment implements OnClickListener {
 
 	private String planType = "1";
 
-	private void switchItemSelected(int position) {
-		Fragment content = null;
+	private void setTabSelectedStatus(int position) {
 		switch (position) {
 		case 0:
 			planType = "1";
@@ -105,7 +111,6 @@ public class PlanFrag extends Fragment implements OnClickListener {
 			rl_longterm_plan.setSelected(false);
 			v_everyday_plan.setVisibility(View.VISIBLE);
 			v_longterm_plan.setVisibility(View.INVISIBLE);
-			content = new EverydayPlanFrag();
 			break;
 		case 1:
 			planType = "0";
@@ -113,19 +118,30 @@ public class PlanFrag extends Fragment implements OnClickListener {
 			rl_longterm_plan.setSelected(true);
 			v_everyday_plan.setVisibility(View.INVISIBLE);
 			v_longterm_plan.setVisibility(View.VISIBLE);
-			content = new LongtermPlanFrag();
 			break;
 		default:
 			break;
 		}
+	}
 
-		if (content != null) {
-			if (myselfContext instanceof FragmentActivity) {
-				((FragmentActivity) myselfContext).getSupportFragmentManager()
-						.beginTransaction().replace(R.id.ll_content2, content)
-						.commit();
-			}
-		}
+	@Override
+	public void setTabSelected(int position) {
+		// TODO Auto-generated method stub
+		setTabSelectedStatus(position);
+	}
 
+	@Override
+	public Fragment[] getFragments() {
+		// TODO Auto-generated method stub
+		Fragment[] frags = new Fragment[2];
+		frags[0] = new EverydayPlanFrag();
+		frags[1] = new LongtermPlanFrag();
+		return frags;
+	}
+
+	@Override
+	public ViewGroup getContainer(View view) {
+		// TODO Auto-generated method stub
+		return (LinearLayout) view.findViewById(R.id.ll_content2);
 	}
 }

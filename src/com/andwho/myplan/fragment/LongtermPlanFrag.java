@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager.LayoutParams;
@@ -39,7 +43,7 @@ import com.andwho.myplan.view.myexpandablelistview.PullToRefreshListView;
 /**
  * @author ouyyx 长远计划
  */
-public class LongtermPlanFrag extends Fragment implements OnClickListener {
+public class LongtermPlanFrag extends BaseFrag implements OnClickListener {
 
 	private static final String TAG = LongtermPlanFrag.class.getSimpleName();
 
@@ -188,9 +192,15 @@ public class LongtermPlanFrag extends Fragment implements OnClickListener {
 			Plan plan = data.get(position);
 			holder.tv_name.setText(plan.content);
 			if ("1".equals(plan.iscompleted)) {
-				holder.iv_iscompleted.setVisibility(View.VISIBLE);
+				holder.tv_name.getPaint().setFlags(
+						Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+				holder.tv_name.setTextColor(Color.parseColor("#909090"));
+				
+				// holder.iv_iscompleted.setVisibility(View.VISIBLE);
 			} else {
-				holder.iv_iscompleted.setVisibility(View.GONE);
+				holder.tv_name.getPaint().setFlags(Paint.ANTI_ALIAS_FLAG);
+				holder.tv_name.setTextColor(Color.parseColor("#333333"));
+				// holder.iv_iscompleted.setVisibility(View.GONE);
 			}
 			return convertView;
 		}
@@ -246,6 +256,11 @@ public class LongtermPlanFrag extends Fragment implements OnClickListener {
 
 		Button btn1 = (Button) popupWindow_view.findViewById(R.id.btn1);
 		Button btn2 = (Button) popupWindow_view.findViewById(R.id.btn2);
+		if ("1".equals(plan.iscompleted)) {
+			btn1.setVisibility(View.GONE);
+		} else {
+			btn1.setVisibility(View.VISIBLE);
+		}
 		btn1.setText("完成");
 		btn2.setText("删除");
 		btn1.setOnClickListener(new OnClickListener() {
@@ -265,14 +280,36 @@ public class LongtermPlanFrag extends Fragment implements OnClickListener {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				// showDeleteWarningTips();
-				DbManger.getInstance(myselfContext).deletePlan(plan.planid);
-				initList();
+				confirmDialog(plan);
 				popupWindow.dismiss();
 			}
 		});
 
-		popupWindow.showAsDropDown(view, view.getWidth() / 3, 0);
+		popupWindow.showAsDropDown(view, view.getWidth() / 5, -20);
 
+	}
+	
+	private void confirmDialog(final Plan plan) {
+		AlertDialog.Builder dialog = new AlertDialog.Builder(myselfContext);
+		dialog.setCancelable(true);
+		dialog.setMessage("确定删除'" + plan.content + "'吗？");
+		dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				DbManger.getInstance(myselfContext).deletePlan(plan.planid);
+				initList();
+			}
+		});
+		dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+		dialog.show();
 	}
 }

@@ -26,7 +26,8 @@
             android:background="@drawable/common_btn_selector"
             android:text="1"
             android:textColor="#ffffff"
-            android:textSize="14dp" />
+            android:textSize="14dp"
+            android:visibility="gone" />
 
         <TextView
             android:layout_width="fill_parent"
