@@ -1,7 +1,6 @@
 package com.andwho.myplan.activity;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
@@ -11,6 +10,7 @@ import android.widget.RelativeLayout;
 import com.andwho.myplan.R;
 import com.andwho.myplan.fragment.MineFrag;
 import com.andwho.myplan.fragment.PlanFrag;
+import com.andwho.myplan.upgrade.UpgradeUtils;
 import com.andwho.myplan.utils.Log;
 
 /**
@@ -47,6 +47,10 @@ public class IndexAct extends BaseAct implements OnClickListener {
 	}
 
 	private void init() {
+
+		// 检查更新
+		UpgradeUtils.checkNewVersion(this);
+
 		Log.d(TAG, "@@...测试提交到github");
 		switchItemSelected(0);
 	}
