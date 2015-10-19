@@ -14,7 +14,7 @@ public final class Log {
 	
 	
 	private static final boolean LOG_SDCARD_ENABLE = false;
-	private static final String LOG_FILE_NAME = "superManger/log.txt";
+	private static final String LOG_FILE_NAME = "myPlan/log.txt";
 
 	private static final boolean LOGD_ENABLE = ENABLE;
 	private static final boolean LOGE_ENABLE = ENABLE;

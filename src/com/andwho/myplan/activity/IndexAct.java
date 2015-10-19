@@ -49,7 +49,7 @@ public class IndexAct extends BaseAct implements OnClickListener {
 	private void init() {
 
 		// 检查更新
-		UpgradeUtils.checkNewVersion(this);
+		UpgradeUtils.checkNewVersion(myselfContext);
 
 		Log.d(TAG, "@@...测试提交到github");
 		switchItemSelected(0);

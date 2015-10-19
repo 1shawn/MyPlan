@@ -72,6 +72,12 @@
             android:windowSoftInputMode="adjustPan" >
         </activity>
 
+         <activity
+            android:name="com.andwho.myplan.upgrade.DownloadActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog" />
+         
         <provider
             android:name=".contentprovider.MyPlanContentProvider"
             android:authorities="com.andwho.myplanprovider"

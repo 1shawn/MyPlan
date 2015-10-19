@@ -25,7 +25,7 @@ import com.andwho.myplan.contentprovider.DbManger;
 import com.andwho.myplan.model.Plan;
 import com.andwho.myplan.preference.MyPlanPreference;
 import com.andwho.myplan.utils.DateUtil;
-import com.andwho.myplan.view.SpDatePickerDialog;
+import com.andwho.myplan.view.MpDatePickerDialog;
 
 /**
  * @author ouyyx 更多

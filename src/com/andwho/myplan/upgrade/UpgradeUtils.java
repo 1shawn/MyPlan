@@ -23,9 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.os.Handler;
 import android.telephony.TelephonyManager;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -34,13 +32,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebSettings.PluginState;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
@@ -57,7 +52,7 @@ import com.andwho.myplan.utils.Log;
  */
 public class UpgradeUtils {
 
-	// private static final String TAG = UpgradeUtils.class.getSimpleName();
+	private static final String TAG = UpgradeUtils.class.getSimpleName();
 	private static ProgressDialog progressDialog;
 
 	/**
@@ -106,27 +101,25 @@ public class UpgradeUtils {
 						// public String isForced;// 是否强制升级 0否 1是
 						// public String path;// 安装包地址
 						// public String packageSize;// 安装包大小
-
-						Log.e("", "@@...smpp...CheckUpdate currentVersion = "
-								+ versionInfo.currentVersion);
-						Log.e("", "@@...smpp...CheckUpdate newVersion = "
-								+ versionInfo.newVersion);
-						Log.e("", "@@...smpp...CheckUpdate availableVersion = "
-								+ versionInfo.availableVersion);
-						Log.e("", "@@...smpp...CheckUpdate description = "
-								+ versionInfo.description);
-						Log.e("", "@@...smpp...CheckUpdate isForced = "
-								+ versionInfo.isForced);
-						Log.e("", "@@...smpp...CheckUpdate path = "
-								+ versionInfo.path);
-						Log.e("", "@@...smpp...CheckUpdate packageSize = "
-								+ versionInfo.packageSize);
-
-						// Log.e("",
-						// "@@...smpp...CheckUpdate currentVersion = " +
-						// versionInfo.availableVersion);Log.e("",
-						// "@@...smpp...CheckUpdate currentVersion = " +
-						// versionInfo.availableVersion);
+						// versionInfo.newVersion = "2.0";
+						// versionInfo.path =
+						// "http://file-bak.liqucn.com/upload/2015/shipin/com.qiyi.video_6.7.1_liqucn.com.apk";
+						// versionInfo.isForced = "0";
+						 Log.e("", "@@...smpp...CheckUpdate currentVersion = "
+						 + versionInfo.currentVersion);
+						 Log.e("", "@@...smpp...CheckUpdate newVersion = "
+						 + versionInfo.newVersion);
+						 Log.e("",
+						 "@@...smpp...CheckUpdate availableVersion = "
+						 + versionInfo.availableVersion);
+						 Log.e("", "@@...smpp...CheckUpdate description = "
+						 + versionInfo.description);
+						 Log.e("", "@@...smpp...CheckUpdate isForced = "
+						 + versionInfo.isForced);
+						 Log.e("", "@@...smpp...CheckUpdate path = "
+						 + versionInfo.path);
+						 Log.e("", "@@...smpp...CheckUpdate packageSize = "
+						 + versionInfo.packageSize);
 
 						// 当前版本小于服务器版本时才提示用户更新
 						if (versionInfo != null
@@ -135,8 +128,6 @@ public class UpgradeUtils {
 								&& versionName
 										.compareTo(versionInfo.newVersion) < 0) {
 							versionInfo.newVersion = versionName;
-							// Log.d(TAG,
-							// "@@...sp...showUpgradeDialog  ");
 							showUpgradeTipsDialog(ctx, versionInfo);
 							UpgradeUtils.saveNewVersionInfo(ctx, versionInfo);
 						}
@@ -153,89 +144,9 @@ public class UpgradeUtils {
 
 				}
 			});
-			// BombQuery
-			// updateSoftVersionDetail(ctx,
-			// new EvenNetWorkListener<CheckVersionResult>() {
-			//
-			// @Override
-			// public void onPreExecute() {
-			// // TODO Auto-generated method stub
-			// if (isShowNoUpdateTip) {
-			// progressDialog = ProgressDialog.show(ctx, null,
-			// "正在检查更新，请稍候...", true, true);
-			// }
-			// }
-			//
-			// @Override
-			// public void onPostExecute(CheckVersionResult result) {
-			// // TODO Auto-generated method stub
-			// if (isShowNoUpdateTip) {
-			// if (!ctx.isFinishing()
-			// && progressDialog != null
-			// && progressDialog.isShowing()) {
-			// progressDialog.dismiss();
-			// }
-			// }
-			//
-			// if (result != null && result.isSuccess()) {
-			// if (result.getVersion() != null) {
-			// Version version = result.getVersion();
-			// final CheckUpdate versionInfo = new CheckUpdate();
-			// versionInfo.path = version.file;
-			// versionInfo.version = version.newVersionNumber;
-			// versionInfo.desc = version.updateInfo;
-			// versionInfo.forceUpdate = version.forceUpdate;
-			//
-			// // Log.d(TAG, "@@...sp...file = "
-			// // + version.file);
-			// // Log.d(TAG,
-			// // "@@...sp...NewVersionNumber = "
-			// // + version.newVersionNumber);
-			// // Log.d(TAG, "@@...sp...updateInfo = "
-			// // + version.updateInfo);
-			// //
-			// // Log.d(TAG, "@@...sp...mVersonName = "
-			// // + versionName);
-			//
-			// // 当前版本小于服务器版本时才提示用户更新
-			// if (versionInfo != null
-			// && versionInfo.version != null
-			// && versionName != null
-			// && versionName
-			// .compareTo(versionInfo.version) < 0) {
-			// versionInfo.localVersion = versionName;
-			// // Log.d(TAG,
-			// // "@@...sp...showUpgradeDialog  ");
-			// showUpgradeTipsDialog(ctx, versionInfo);
-			// UpgradeUtils.saveNewVersionInfo(ctx,
-			// versionInfo);
-			// }
-			// } else {
-			// if (isShowNoUpdateTip) {
-			// showNoUpdateTip(ctx);
-			// }
-			// // ToastUtils.showSampleToast(ctx,
-			// // result.getMsg());
-			// }
-			//
-			// }
-			//
-			// }
-			//
-			// @Override
-			// public void onProgressUpdate(String state) {
-			// // TODO Auto-generated method stub
-			//
-			// }
-			//
-			// });
-			//
 		} catch (Exception e) {
 			// Log.d(TAG, " " + e.getMessage());
 		}
-		// // }
-
-		// }.start();
 
 	}
 
@@ -403,31 +314,34 @@ public class UpgradeUtils {
 				.findViewById(R.id.ll_progressBar);
 		ll_progressBar.setVisibility(View.VISIBLE);
 		// WebView
-		final WebView webview = (WebView) view.findViewById(R.id.webview);
-		webview.getSettings().setJavaScriptEnabled(true);
-		if (android.os.Build.VERSION.SDK_INT >= 8) {
-			webview.getSettings().setPluginState(PluginState.ON);
-		}
-		webview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-		webview.getSettings().setDefaultTextEncodingName("UTF-8");
-		webview.setWebChromeClient(new WebChromeClient() {
-			@Override
-			public void onProgressChanged(WebView view, int newProgress) {
-				if (newProgress == 100) {
-					new Handler().postDelayed(new Runnable() {
-						public void run() {
-							ll_progressBar.setVisibility(View.GONE);
-							webview.setVisibility(View.VISIBLE);
-						}
-					}, 0);
-				}
-			}
-		});
-		// Log.d(TAG, "@@...loadUrl ...desc = " + versionInfo.desc);
-		if (!TextUtils.isEmpty(versionInfo.description)) {
-			webview.loadUrl(versionInfo.description);
-		}
-		webview.setVisibility(View.GONE);
+		// final WebView webview = (WebView) view.findViewById(R.id.webview);
+		// webview.getSettings().setJavaScriptEnabled(true);
+		// if (android.os.Build.VERSION.SDK_INT >= 8) {
+		// webview.getSettings().setPluginState(PluginState.ON);
+		// }
+		// webview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+		// webview.getSettings().setDefaultTextEncodingName("UTF-8");
+		// webview.setWebChromeClient(new WebChromeClient() {
+		// @Override
+		// public void onProgressChanged(WebView view, int newProgress) {
+		// if (newProgress == 100) {
+		// new Handler().postDelayed(new Runnable() {
+		// public void run() {
+		// ll_progressBar.setVisibility(View.GONE);
+		// webview.setVisibility(View.VISIBLE);
+		// }
+		// }, 0);
+		// }
+		// }
+		// });
+		// // Log.d(TAG, "@@...loadUrl ...desc = " + versionInfo.desc);
+		// if (!TextUtils.isEmpty(versionInfo.description)) {
+		// webview.loadUrl(versionInfo.description);
+		// }
+		// webview.setVisibility(View.GONE);
+		final TextView tv_desc = (TextView) view.findViewById(R.id.tv_desc);
+		tv_desc.setText(versionInfo.description);
+		ll_progressBar.setVisibility(View.GONE);
 		// Button
 		Button btn_left = (Button) view.findViewById(R.id.btn_left);
 		if ("1".equals(versionInfo.isForced)) {
@@ -464,7 +378,7 @@ public class UpgradeUtils {
 						ctx.finish();
 					}
 				} catch (Exception e) {
-					// Log.e(TAG,
+					// Log.e("",
 					// "@@...sp..startActivity.exception : "
 					// + e.getMessage());
 				}

@@ -5,8 +5,8 @@ import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
 import android.widget.DatePicker;
 
-public class SpDatePickerDialog extends DatePickerDialog {
-	public SpDatePickerDialog(Context context, OnDateSetListener callBack,
+public class MpDatePickerDialog extends DatePickerDialog {
+	public MpDatePickerDialog(Context context, OnDateSetListener callBack,
 			int year, int monthOfYear, int dayOfMonth) {
 		super(context, callBack, year, monthOfYear, dayOfMonth);
 		this.setTitle(year + "年" + (monthOfYear + 1) + "月" + dayOfMonth + "日");

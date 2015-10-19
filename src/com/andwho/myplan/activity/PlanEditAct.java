@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -20,6 +19,7 @@ import com.andwho.myplan.R;
 import com.andwho.myplan.contentprovider.DbManger;
 import com.andwho.myplan.model.Plan;
 import com.andwho.myplan.utils.DateUtil;
+import com.andwho.myplan.utils.Log;
 
 /**
  * 编辑计划 ouyyx

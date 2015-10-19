@@ -606,6 +606,7 @@ containing a value of this type.
         public static final int server_des=0x7f0a005b;
         public static final int tv=0x7f0a0053;
         public static final int tv_birthday=0x7f0a0022;
+        public static final int tv_desc=0x7f0a004c;
         public static final int tv_everyday_plan=0x7f0a0036;
         public static final int tv_finish_everyday=0x7f0a0030;
         public static final int tv_finish_longterm=0x7f0a0033;
@@ -630,7 +631,6 @@ containing a value of this type.
         public static final int v_everyday_plan=0x7f0a0037;
         public static final int v_longterm_plan=0x7f0a003a;
         public static final int viewPager=0x7f0a005d;
-        public static final int webview=0x7f0a004c;
         public static final int wv=0x7f0a0025;
     }
     public static final class layout {

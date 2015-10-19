@@ -30,7 +30,7 @@ import com.andwho.myplan.R;
 import com.andwho.myplan.preference.MyPlanPreference;
 import com.andwho.myplan.utils.DateUtil;
 import com.andwho.myplan.view.RoundedImageView;
-import com.andwho.myplan.view.SpDatePickerDialog;
+import com.andwho.myplan.view.MpDatePickerDialog;
 
 /**
  * @author ouyyx 个人设置
@@ -255,7 +255,7 @@ public class PersonalSettingAct extends BaseAct implements OnClickListener {
 	private void showDateDialog() {
 		Locale.setDefault(Locale.CHINA);// 设置当前环境为中文
 
-		final SpDatePickerDialog spDateDialog = new SpDatePickerDialog(
+		final MpDatePickerDialog spDateDialog = new MpDatePickerDialog(
 				myselfContext, null, startYear, startMonth - 1, startDay);
 
 		spDateDialog.setCancelable(true);

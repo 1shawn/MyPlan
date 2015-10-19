@@ -124,7 +124,7 @@ public class DownloadActivity extends Activity {
 		progress_text = (TextView) findViewById(R.id.progress_text);
 		TextView updateDesc = (TextView) findViewById(R.id.updateDesc);
 		StringBuilder desc = new StringBuilder("当前版本：").append(
-				mInfo.availableVersion).append("\n");
+				mInfo.currentVersion).append("\n");
 		desc.append("服务器版本：").append(mInfo.newVersion);
 		updateDesc.setText(desc);
 		// server_des.setText(mInfo.desc);
